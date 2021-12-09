@@ -34,8 +34,9 @@ const config: HardhatUserConfig = {
       forking: {
         url: "https://eth-mainnet.alchemyapi.io/v2/Sasfx5mhbe9nZTI86nuY_8OD7rV5O6Tq",
       },
+      initialBaseFeePerGas: 0,
       // gas: 100000,
-      // gasPrice: 563716655760,
+      gasPrice: 10000000,
     }
   },
   gasReporter: {
@@ -44,6 +45,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
+  },
+  mocha: {
+    timeout: 50000,
   },
 };
 
