@@ -30,6 +30,13 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    hardhat: {
+      forking: {
+        url: "https://eth-mainnet.alchemyapi.io/v2/Sasfx5mhbe9nZTI86nuY_8OD7rV5O6Tq",
+      },
+      // gas: 100000,
+      // gasPrice: 563716655760,
+    }
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

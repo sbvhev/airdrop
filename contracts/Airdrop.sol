@@ -16,9 +16,9 @@ contract Airdrop is IAirdrop {
     IERC20 public immutable gnomeToken;
     address public constant GNOME = 0xE58Eb0Bb13a71d7B95c4C3cBE6Cb3DBb08f9cBFB;
     address public constant EDITION = 0xaf89C5E115Ab3437fC965224D317d09faa66ee3E;
-    mapping(uint16 => bool) claimStatus;
+    mapping(uint16 => uint8) claimStatus;
     constructor(address _nftToken) {
-        nftToken = IERC721(_nftToken);
+        nftToken = IEdition(_nftToken);
         gnomeToken = IERC20(GNOME);
 
     }
@@ -26,22 +26,28 @@ contract Airdrop is IAirdrop {
     function claimAirdrop(uint16[] calldata _tokenIds) override public {
         uint256 balance;
         for(uint8 i = 0; i < _tokenIds.length; i++) {
-            uint16 tokenId = _tokenIds[i];
-            require(nftToken.ownerOf(tokenId) == msg.sender, "ERC721: not owner of token");
-            require(nftToken.tokenToEdition(tokenId) == 184, "ERC721: not proper edition");
-            require(!isTokenUsed(tokenId), "Airdrop: token is already claimed!");
-
-            setTokenUsed(i);
-            balance = balance.add(1000);
+        console.log('_tokenIDs', _tokenIds[i]);
+//            uint16 tokenId = _tokenIds[i];
+//            require(nftToken.ownerOf(tokenId) == msg.sender, "ERC721: not owner of token");
+//            require(nftToken.tokenToEdition(tokenId) == 184, "ERC721: not proper edition");
+//            require(!isTokenUsed(tokenId), "Airdrop: token is already claimed!");
+//
+//            setTokenUsed(i);
+//            balance = balance.add(1000);
         }
-        gnomeToken.transfer(msg.sender, balance.mul(1e18));
+//        gnomeToken.transfer(msg.sender, balance.mul(1e18));
     }
 
-    function isTokenUsed(uint16 id) external view override returns (bool result) {
-        return claimStatus[id];
+    function isTokenUsed(uint16 _position) public view override returns (bool result) {
+        uint16 byteNum = uint16(_position / 8);
+        uint16 bitPos = uint8(_position - byteNum * 8);
+        if (claimStatus[byteNum] == 0) return false;
+        return claimStatus[byteNum] & (0x01 * 2**bitPos) != 0;
     }
 
-    function setTokenUsed(uint16 id) override {
-        claimStatus[id] = true;
+    function setTokenUsed(uint16 _position) internal {
+        uint16 byteNum = uint16(_position / 8);
+        uint16 bitPos = uint8(_position - byteNum * 8);
+        claimStatus[byteNum] = uint8(claimStatus[byteNum] | (2**bitPos));
     }
 }
