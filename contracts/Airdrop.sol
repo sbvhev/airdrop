@@ -28,28 +28,29 @@ contract Airdrop is IAirdrop {
 
     function claimAirdrop(uint16[] calldata _tokenIds) override public {
         uint256 balance;
-        for(uint8 i = 0; i < _tokenIds.length; i++) {
+        for (uint8 i = 0; i < _tokenIds.length; i++) {
             uint16 tokenId = _tokenIds[i];
             require(nftToken.ownerOf(tokenId) == msg.sender, "ERC721: not owner of token");
-            require(!isTokenUsed(tokenId), "Airdrop: token is already claimed!");
-
-            setTokenUsed(i);
-            balance = balance.add(1000);
+            if (!isTokenUsed(tokenId)) {
+                setTokenUsed(tokenId);
+                balance = balance.add(1000);
+                console.log('balance increased', isTokenUsed(tokenId));
+            }
         }
         gnomeToken.transfer(msg.sender, balance.mul(1e18));
     }
 
-    function isTokenUsed(uint16 _position) public view override returns (bool result) {
+    function isTokenUsed(uint16 _position) public view override returns (bool) {
         uint16 byteNum = uint16(_position / 8);
         uint16 bitPos = uint8(_position - byteNum * 8);
         if (claimStatus[byteNum] == 0) return false;
-        return claimStatus[byteNum] & (0x01 * 2**bitPos) != 0;
+        return claimStatus[byteNum] & (2 ** bitPos) != 0;
     }
 
     function setTokenUsed(uint16 _position) internal {
         uint16 byteNum = uint16(_position / 8);
         uint16 bitPos = uint8(_position - byteNum * 8);
-        claimStatus[byteNum] = uint8(claimStatus[byteNum] | (2**bitPos));
+        claimStatus[byteNum] = uint8(claimStatus[byteNum] | (2 ** bitPos));
     }
 
     function getUsedTokenData(uint8 _page, uint16 _perPage)
