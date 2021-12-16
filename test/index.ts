@@ -74,7 +74,7 @@ describe("Airdrop", function () {
     expect(await airdrop.isTokenUsed(909)).to.be.equal(true);
     expect(await airdrop.isTokenUsed(910)).to.be.equal(true);
 
-    await airdrop.connect(signer).claimAirdrop([909, 910, 911]);
+    await airdrop.connect(signer).claimAirdrop([909, 910]);
 
     // balance does not change
     expect( await gnomeContract.balanceOf(signer.address)).equal(afterGnomeBalance);
