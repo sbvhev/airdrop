@@ -56,11 +56,30 @@ describe("Airdrop", function () {
 
   it("Shouldn't claim tokens already claimed", async function () {
     const initialGnomeBalance = await gnomeContract.balanceOf(signer.address);
+
+    // both Tokens are not used
+    expect(await airdrop.isTokenUsed(909)).to.be.equal(false);
+    expect(await airdrop.isTokenUsed(910)).to.be.equal(false);
+
+    // claim
     await airdrop.connect(signer).claimAirdrop([909, 910]);
-    const isTokenUsed = await airdrop.isTokenUsed(909);
-    // wrong set token used
-    expect(await gnomeContract.balanceOf(signer.address)).equal(
-      initialGnomeBalance
+
+    const afterGnomeBalance = await gnomeContract.balanceOf(signer.address);
+
+    expect(afterGnomeBalance).equal(
+      initialGnomeBalance.add(ethers.utils.parseEther("1").mul(2000))
     );
+
+    // both used
+    expect(await airdrop.isTokenUsed(909)).to.be.equal(true);
+    expect(await airdrop.isTokenUsed(910)).to.be.equal(true);
+
+    await airdrop.connect(signer).claimAirdrop([909, 910, 911]);
+
+    // balance does not change
+    expect( await gnomeContract.balanceOf(signer.address)).equal(afterGnomeBalance);
   });
+
+
+
 });

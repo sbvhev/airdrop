@@ -16,7 +16,7 @@ contract Airdrop is IAirdrop {
     IERC20 public immutable gnomeToken;
     address public constant GNOME = 0xE58Eb0Bb13a71d7B95c4C3cBE6Cb3DBb08f9cBFB;
     address public constant EDITION = 0xaf89C5E115Ab3437fC965224D317d09faa66ee3E;
-    mapping(uint16 => uint8) claimStatus;
+    mapping(uint16 => uint8) public claimStatus;
 
     event Received(address, uint);
 
@@ -34,7 +34,7 @@ contract Airdrop is IAirdrop {
             if (!isTokenUsed(tokenId)) {
                 setTokenUsed(tokenId);
                 balance = balance.add(1000);
-                console.log('balance increased', isTokenUsed(tokenId));
+                console.log("balance increased", isTokenUsed(tokenId));
             }
         }
         gnomeToken.transfer(msg.sender, balance.mul(1e18));
@@ -44,7 +44,7 @@ contract Airdrop is IAirdrop {
         uint16 byteNum = uint16(_position / 8);
         uint16 bitPos = uint8(_position - byteNum * 8);
         if (claimStatus[byteNum] == 0) return false;
-        return claimStatus[byteNum] & (2 ** bitPos) != 0;
+        return claimStatus[byteNum] & (0x01 * 2 ** bitPos) != 0;
     }
 
     function setTokenUsed(uint16 _position) internal {
