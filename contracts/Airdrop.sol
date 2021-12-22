@@ -32,8 +32,13 @@ contract Airdrop is IAirdrop {
             uint16 tokenId = _tokenIds[i];
             require(nftToken.ownerOf(tokenId) == msg.sender, "ERC721: not owner of token");
             if (!isTokenUsed(tokenId)) {
-                setTokenUsed(tokenId);
-                balance = balance.add(1000);
+                if (nftToken.tokenToEdition(tokenId) == 184) {
+                    balance = balance.add(100);
+                    setTokenUsed(tokenId);
+                } else if (nftToken.tokenToEdition(tokenId) == 186) {
+                    balance = balance.add(1000);
+                    setTokenUsed(tokenId);
+                }
                 console.log("balance increased", isTokenUsed(tokenId));
             }
         }

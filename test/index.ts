@@ -50,7 +50,7 @@ describe("Airdrop", function () {
     const initialGnomeBalance = await gnomeContract.balanceOf(signer.address);
     await airdrop.connect(signer).claimAirdrop([909, 910]);
     expect(await gnomeContract.balanceOf(signer.address)).equal(
-      initialGnomeBalance.add(ethers.utils.parseEther("1").mul(2000))
+      initialGnomeBalance.add(ethers.utils.parseEther("1").mul(200))
     );
   });
 
@@ -67,7 +67,7 @@ describe("Airdrop", function () {
     const afterGnomeBalance = await gnomeContract.balanceOf(signer.address);
 
     expect(afterGnomeBalance).equal(
-      initialGnomeBalance.add(ethers.utils.parseEther("1").mul(2000))
+      initialGnomeBalance.add(ethers.utils.parseEther("1").mul(200))
     );
 
     // both used
@@ -77,9 +77,8 @@ describe("Airdrop", function () {
     await airdrop.connect(signer).claimAirdrop([909, 910]);
 
     // balance does not change
-    expect( await gnomeContract.balanceOf(signer.address)).equal(afterGnomeBalance);
+    expect(await gnomeContract.balanceOf(signer.address)).equal(
+      afterGnomeBalance
+    );
   });
-
-
-
 });
